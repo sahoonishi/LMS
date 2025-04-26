@@ -1,0 +1,5 @@
+.env
+node_modules
+# this is gitignore
+hello.ts
+h.ts
