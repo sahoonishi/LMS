@@ -21,13 +21,17 @@ app.use(
 
 // Testing API
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
-  res.send("Hi");
+  res.status(200).json({
+    message:"Success",
+    success:true
+  })
 });
 
 app.all("/{*any}", (req: Request, res: Response, next: NextFunction) => {
-  const error: any = new Error(`Route ${req.originalUrl} not found`) as any;
+  const error = new Error(`Route ${req.originalUrl} not found`) as any;
   error.statusCode = 404;
   next(error);
+  
 });
 
 
