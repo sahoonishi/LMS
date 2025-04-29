@@ -2,6 +2,8 @@ import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
+import { ErrorMiddleware } from "./middleware/error";
+
 dotenv.config();
 export const app = express();
 
@@ -33,5 +35,7 @@ app.all("/{*any}", (req: Request, res: Response, next: NextFunction) => {
   next(error);
   
 });
+
+app.use(ErrorMiddleware);
 
 
