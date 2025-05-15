@@ -49,7 +49,7 @@ export const registrationUser = CatchAsyncError(
         activationToken:token,
       })
     } catch (error:any) {
-      return next(new ErrorHandler(error.message, 500));
+      return next(new ErrorHandler(error.message, 400));
     }
   }
 );
