@@ -1,5 +1,8 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 import argon2 from "argon2";
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+dotenv.config();
 
 const emailRegexPattern: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -15,6 +18,8 @@ export interface IUser extends Document {
   isVerfied: boolean;
   courses: Array<{ courseId: string }>;
   comparePassword: (password: string) => Promise<boolean>;
+  SignAccessToken:()=> string;
+  SignRefreshToken:()=> string;
 }
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
@@ -65,6 +70,19 @@ userSchema.pre<IUser>("save", async function (next) {
   this.password = await argon2.hash(this.password);
   next();
 });
+
+//-----------------Access token----------------
+userSchema.methods.SignAccessToken = function(){
+  return jwt.sign({id:this._id},process.env.ACCESS_TOKEN_SECRET || "" as string);
+}
+userSchema.methods.SignRefreshToken = function(){
+  return jwt.sign({id:this._id},process.env.REFRESH_TOKEN_SECRET || "" as string);
+}
+
+
+
+
+
 // Compare password method
 userSchema.methods.comparePassword = async function (
   enteredpassword: string
