@@ -80,9 +80,6 @@ userSchema.methods.SignRefreshToken = function(){
 }
 
 
-
-
-
 // Compare password method
 userSchema.methods.comparePassword = async function (
   enteredpassword: string
@@ -92,3 +89,4 @@ userSchema.methods.comparePassword = async function (
 // Create the User model
 const userModel: Model<IUser> = mongoose.model<IUser>("User", userSchema);
 export default userModel;
+
