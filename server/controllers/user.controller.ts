@@ -6,12 +6,11 @@ import jwt, { Secret } from "jsonwebtoken";
 import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+import { fileURLToPath } from "url";
+import { dirname } from "path";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 
 // Register a new user
 interface IRegistrationBody {
@@ -33,22 +32,25 @@ export const registrationUser = CatchAsyncError(
       email,
       password,
     };
-    const {activationCode,token} = createActivationToken(user);
-    const data = {user:{name:user.name},activationCode};
-    const html = await ejs.renderFile(path.join(__dirname,"../mails/activation-mail.ejs"),data);
+    const { activationCode, token } = createActivationToken(user);
+    const data = { user: { name: user.name }, activationCode };
+    const html = await ejs.renderFile(
+      path.join(__dirname, "../mails/activation-mail.ejs"),
+      data
+    );
     try {
       await sendMail({
-        email:user.email,
-        subject:"Activate your account",
-        template:"activation-mail.ejs",
-        data
+        email: user.email,
+        subject: "Activate your account",
+        template: "activation-mail.ejs",
+        data,
       });
       res.status(201).json({
-        success:true,
-        message:`Please check your email: ${user.email} to activate your account`,
-        activationToken:token,
-      })
-    } catch (error:any) {
+        success: true,
+        message: `Please check your email: ${user.email} to activate your account`,
+        activationToken: token,
+      });
+    } catch (error: any) {
       return next(new ErrorHandler(error.message, 400));
     }
   }
@@ -71,31 +73,31 @@ const createActivationToken = (user: IRegistrationBody): IActivationToken => {
   return { token, activationCode };
 };
 
-
 // -----------------------------------ACTIVATE USER-----------------------------------
-interface IActivationRequest{
+interface IActivationRequest {
   activationToken: string;
   activationCode: string;
 }
 
 export const activateUser = CatchAsyncError(
-  async(req:Request,res:Response,next:NextFunction)=>{
-    const {activationToken,activationCode} = req.body as IActivationRequest;
-    if(!activationToken){
-      return next(new ErrorHandler("Please provide activation token",400));
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { activationToken, activationCode } = req.body as IActivationRequest;
+    if (!activationToken) {
+      return next(new ErrorHandler("Please provide activation token", 400));
     }
     const decodedData = jwt.verify(
-      activationToken,process.env.ACTIVATION_SECRET as Secret
-    ) as {user:IUser,activationCode:string};
+      activationToken,
+      process.env.ACTIVATION_SECRET as Secret
+    ) as { user: IUser; activationCode: string };
 
-    if(decodedData.activationCode !== activationCode){
-      return next(new ErrorHandler("Invalid activation code",400));
+    if (decodedData.activationCode !== activationCode) {
+      return next(new ErrorHandler("Invalid activation code", 400));
     }
 
-    const {name,email,password} = decodedData.user;
-    const existUser = await userModel.findOne({email});
-    if(existUser){
-      return next(new ErrorHandler("User already exists",400));
+    const { name, email, password } = decodedData.user;
+    const existUser = await userModel.findOne({ email });
+    if (existUser) {
+      return next(new ErrorHandler("User already exists", 400));
     }
     const newUser = await userModel.create({
       name,
@@ -105,11 +107,11 @@ export const activateUser = CatchAsyncError(
     res.status(201).json({
       success: true,
       message: "User registered successfully",
-    })
+    });
   }
-)
+);
 
-// ----------------------------------------LOGIN USER--------------------------------------------
+// ----------------------------------------LOGINUSER----------------------------------------
 
 interface ILoginRequest {
   email: string;
@@ -117,8 +119,21 @@ interface ILoginRequest {
 }
 
 export const loginUser = CatchAsyncError(
-  async(req:Request,res:Response,next:NextFunction)=>{
-    const {email,password}=req.body as ILoginRequest;
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { email, password } = req.body as ILoginRequest;
+    if (!email || !password) {
+      return next(new ErrorHandler("Please provide email and password", 400));
+    }
+    const user = await userModel.findOne({ email }).select("+password");
+
+    if (!user) {
+      return next(new ErrorHandler("No user found", 400));
+    }
+
+    const isPasswordMatch = await user.comparePassword(password);
+    if (!isPasswordMatch) {
+      return next(new ErrorHandler("Invalid email or password", 400));
+    };
     
   }
-)
+);
