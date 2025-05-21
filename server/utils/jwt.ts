@@ -1,6 +1,7 @@
 import dotenv from "dotenv";
 import {Response} from "express";
 import { IUser } from "../models/user.model";
+import { redis } from "./redis";
 dotenv.config();
 
 interface ITokenOptions{
@@ -16,7 +17,7 @@ const sendToken=(user:IUser,statusCode:number,res:Response)=>{
   const refreshToken = user.SignRefreshToken();
 
   //! UPLOAD SESSION TO REDIS
-
+  redis.set(String(user._id), JSON.stringify(user) as any);
 
   //!parse enviroment variables 
 
@@ -38,7 +39,19 @@ const sendToken=(user:IUser,statusCode:number,res:Response)=>{
     sameSite:"lax",
   } 
 
-  //! only set secure true in producton
+  //! only set secure true in producto
+  // n
+  if(process.env.NODE_ENV === "production"){
+    accessTokenOptions.secure = true;
+  }
+  res.cookie("accessToken",accessToken,accessTokenOptions);
+  res.cookie("refreshToken",requestIdleCallback,accessTokenOptions);
+
+  res.status(statusCode).json({
+    success:true,
+    user,
+    accessToken
+  })
 
 
 }
