@@ -8,6 +8,7 @@ import path from "path";
 import sendMail from "../utils/sendMail";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
+import { sendToken } from "../utils/jwt";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -107,6 +108,7 @@ export const activateUser = CatchAsyncError(
     res.status(201).json({
       success: true,
       message: "User registered successfully",
+      user: newUser,
     });
   }
 );
@@ -133,7 +135,20 @@ export const loginUser = CatchAsyncError(
     const isPasswordMatch = await user.comparePassword(password);
     if (!isPasswordMatch) {
       return next(new ErrorHandler("Invalid email or password", 400));
-    };
-    
+    }
+
+    sendToken(user, 200, res);
   }
 );
+
+//!-------------------LOGOUT USER---------------
+
+export const logoutUser=CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+    res.cookie("accessToken","",{maxAge:1});
+    res.cookie("refreshToken","",{maxAge:1});
+
+    res.status(200).json({
+      message:"Logout done",
+      success:true
+    })
+})
