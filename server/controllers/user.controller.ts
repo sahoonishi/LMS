@@ -9,6 +9,7 @@ import sendMail from "../utils/sendMail";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
 import { sendToken } from "../utils/jwt";
+import { redis } from "../utils/redis";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -146,6 +147,8 @@ export const loginUser = CatchAsyncError(
 export const logoutUser=CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
     res.cookie("accessToken","",{maxAge:1});
     res.cookie("refreshToken","",{maxAge:1});
+    const userId = req.user?._id || "";
+    redis.del(String(userId)); 
 
     res.status(200).json({
       message:"Logout done",
