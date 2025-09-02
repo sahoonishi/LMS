@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from "express";
 
-
 //? ITS LIKE ASYNC HANDLER
 
 export const CatchAsyncError =

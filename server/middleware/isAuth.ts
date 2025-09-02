@@ -25,3 +25,15 @@ export const isAuth = CatchAsyncError(async(req:Request,res:Response,next:NextFu
   req.user = JSON.parse(user);
   next();
 })
+
+
+// Validate User Role
+
+export const ValidateUserRole = (...roles:string[])=>{
+  return (req:Request , res:Response , next:NextFunction)=>{
+    if(!roles.includes(req.user?.role || '')){
+        return next (new ErrorHandler(`Role ${req.user?.role} is not allowed` , 403))
+    }
+    next();
+  }
+}
