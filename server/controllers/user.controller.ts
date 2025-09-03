@@ -336,7 +336,7 @@ export const updateProfilepic = CatchAsyncError(
 
     await user?.save();
     await redis.set(String(userId), JSON.stringify(user));
-    res.status(200).json({
+    res.status(200).json({ 
       success: true,
       message:"Profilepic updated",
       user,
