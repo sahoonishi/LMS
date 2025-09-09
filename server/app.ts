@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { ErrorMiddleware } from "./middleware/error";
 import userRouter from "./routes/user.route";
+import courseRouter from "./routes/course.route";
 
 dotenv.config();
 export const app = express();
@@ -22,6 +23,7 @@ app.use(
 
 //?---------------------------------------ALL ROUTES----------------------------------------------
 app.use("/api/v1/user",userRouter);
+app.use("/api/v1/course",courseRouter);
 
 // Testing API
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
