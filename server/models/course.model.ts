@@ -3,8 +3,8 @@ import { IUser } from "./user.model";
 
 interface IComment extends Document {
   user: IUser; // but in video , he written object inpalce of IUser
-  comment: string;
-  commentReplies?: IComment[];
+  question: string;
+  questionReplies?: IComment[];
 }
 interface IReview extends Document {
   user: IUser;
@@ -56,8 +56,8 @@ const linkSchema = new Schema<ILink>({
 });
 const commentSchema = new Schema<IComment>({
     user:Object,
-    comment:String,
-    commentReplies:[Object]
+    question:String,
+    questionReplies:[Object]
 });
 const courseDataSchema = new Schema<ICourseData>({
     videoUrl:String,
@@ -66,7 +66,7 @@ const courseDataSchema = new Schema<ICourseData>({
     description:String,
     videoLength:String,
     videoPlayer:String,
-    links:[linkSchema], //! -------------IMP------------>>>>>>  Aise v likh sakte h
+    links:[linkSchema], //! ---------------IMP------------->>>>>>  Aise v likh sakte h
     suggestion:String,
     questions:[commentSchema]
 });
