@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 import { IUser } from "./user.model";
 
 interface IComment extends Document {
-  user: IUser; // but in video , he written object inpalce of IUser
+  user: IUser;
   question: string;
   questionReplies?: IComment[];
 }
@@ -10,7 +10,7 @@ interface IReview extends Document {
   user: IUser;
   rating: number;
   comment: string;
-  commentReplies: IComment[];
+  commentReplies?: IComment[];
 }
 interface ILink extends Document {
   title: string;
@@ -48,7 +48,8 @@ interface ICourse extends Document {
 const reviewSchema = new Schema<IReview>({
     user:Object,
     rating:{type:Number , default:0},
-    comment:String
+    comment:String,
+    commentReplies:[Object]
 });
 const linkSchema = new Schema<ILink>({
     title:String,
