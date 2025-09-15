@@ -1,6 +1,7 @@
 import express from 'express';
-import { activateUser, getUserInfo, loginUser, logoutUser, registrationUser, socialAuth, UpdateAccesstoken, updateInfo, updatePassword, updateProfilepic } from '../controllers/user.controller';
-import { isAuth } from '../middleware/isAuth';
+import { activateUser, deleteUser, getUserInfo, loginUser, logoutUser, registrationUser, socialAuth, UpdateAccesstoken, updateInfo, updatePassword, updateProfilepic, updateUserRole } from '../controllers/user.controller';
+import { isAuth, ValidateUserRole } from '../middleware/isAuth';
+import { getAllUsers } from '../services/user.service';
 
 const userRouter = express.Router();
 userRouter.post('/register', registrationUser);
@@ -11,6 +12,9 @@ userRouter.get('/refreshtoken',UpdateAccesstoken);
 userRouter.get('/getuserinfo',isAuth,getUserInfo);
 userRouter.post('/social',socialAuth);
 userRouter.put('/updateuser' , isAuth , updateInfo);
+userRouter.put('/updateUser' , isAuth ,ValidateUserRole("admin"), updateUserRole);
 userRouter.put('/updatepassword' , isAuth , updatePassword);
 userRouter.put('/updateprofilepic' , isAuth , updateProfilepic);
+userRouter.get('/getall' , isAuth ,ValidateUserRole("admin"), getAllUsers);
+userRouter.delete('/deleteuser/:id' , isAuth ,ValidateUserRole("admin"), deleteUser);
 export default userRouter;

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { CatchAsyncError } from "../middleware/catchAsyncErrors";
 import cloudinary from "cloudinary";
-import { createCourse } from "../services/course.service";
+import { createCourse,getAllcourses } from "../services/course.service";
 import CourseModel from "../models/course.model";
 import { redis } from "../utils/redis";
 import ErrorHandler from "../utils/ErrorHandler";
@@ -345,3 +345,19 @@ export const addReplytoReview = CatchAsyncError(
     });
   }
 );
+
+export const getAllCOurses = CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  getAllcourses(res);
+})
+export const deleteCourse=CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  const {id} = req.params;
+  const course = await CourseModel.findByIdAndDelete(id);
+  if(!course){
+    return next(new ErrorHandler("Course not found",404))
+  }
+  await redis.del(id);
+  return res.status(200).json({
+    message:"Course deleted",
+    success:true
+  })
+})

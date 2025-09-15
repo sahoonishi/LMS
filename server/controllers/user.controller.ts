@@ -14,7 +14,7 @@ import {
   sendToken,
 } from "../utils/jwt";
 import { redis } from "../utils/redis";
-import { getUserinfo } from "../services/user.service";
+import { getAllUsers, getUserinfo } from "../services/user.service";
 import cloudinary from "cloudinary";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -343,3 +343,33 @@ export const updateProfilepic = CatchAsyncError(
     });
   }
 );
+
+// get all users
+export const getAllusers = CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  getAllUsers(res);
+})
+
+// update user role --only admin
+export const updateUserRole=CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  const {id,role}=req.body;
+  const user = await userModel.findByIdAndUpdate(id,{role},{new:true});
+  res.status(200).json({
+    success:true,
+    user,
+    message:"user updated successfully"
+  })
+})
+// delete user --only admin
+export const deleteUser=CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
+  const {id}=req.params;
+  const user = await userModel.findById(id);
+  if(!user){
+    return next(new ErrorHandler("User not found",404))
+  }
+  await user.deleteOne();
+  await redis.del(id);
+  return res.status(200).json({
+    success:true,
+    message:"User deleted"
+  })
+})
