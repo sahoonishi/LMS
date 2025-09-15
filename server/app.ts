@@ -7,6 +7,7 @@ import userRouter from "./routes/user.route";
 import courseRouter from "./routes/course.route";
 import orderRouter from "./routes/order.route";
 import notificationRouter from "./routes/notification.route";
+import analyticsRouter from "./routes/analytics.route";
 
 dotenv.config();
 export const app = express();
@@ -28,6 +29,7 @@ app.use("/api/v1/user",userRouter);
 app.use("/api/v1/course",courseRouter);
 app.use("/api/v1/order",orderRouter);
 app.use("/api/v1/notification",notificationRouter);
+app.use("/api/v1/analytics",analyticsRouter);
 
 // Testing API
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
