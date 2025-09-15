@@ -9,6 +9,7 @@ import mongoose from "mongoose";
 import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
+import { IUser } from "../models/user.model";
 
 export const uploadcourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -195,7 +196,10 @@ interface IAddAnswer {
 export const addAnswer = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     const { answer, courseId, contentId, questionId }: IAddAnswer = req.body;
-    const course = await CourseModel.findById(courseId);
+    const course = await CourseModel.findById(courseId).populate({
+      path: "courseData.questions.user",
+      select: "name email avatar role isVerified courses", // explicitly include only these fields
+    });
     if (!mongoose.Types.ObjectId.isValid(contentId)) {
       return next(new ErrorHandler("Invalid content ID", 400));
     }
@@ -223,7 +227,7 @@ export const addAnswer = CatchAsyncError(
       // create notification logix
     } else {
       const data = {
-        name: question.user.name,
+        name: (question.user as IUser).name,
         title: courseContent.title,
       };
       const html = await ejs.renderFile(
@@ -232,7 +236,7 @@ export const addAnswer = CatchAsyncError(
       );
       try {
         await sendMail({
-          email: question.user.email,
+          email: (question.user as IUser).email,
           subject: "Question Reply",
           template: "question-reply.ejs",
           data,
@@ -277,51 +281,56 @@ export const addReview = CatchAsyncError(
     course?.reviews.push(reviewData);
 
     let total = 0;
-    course?.reviews.forEach((item:any)=> {total += item.rating});
-    if(course){
-      course.rating = total/course.reviews.length;
+    course?.reviews.forEach((item: any) => {
+      total += item.rating;
+    });
+    if (course) {
+      course.rating = total / course.reviews.length;
     }
     await course?.save();
     const notification = {
-      title:"New Review Added",
-      message:`${req?.user?.name} has added a review on ${course?.name} course!!`
-    }
+      title: "New Review Added",
+      message: `${req?.user?.name} has added a review on ${course?.name} course!!`,
+    };
     // create a notification
 
     res.status(200).json({
-      success:true,
+      success: true,
       course,
-      message:"Review added successfully"
-    })
+      message: "Review added successfully",
+    });
   }
 );
 
-interface IReviewData{
-  comment:string;
-  courseId:string;
-  reviewId:String;
+interface IReviewData {
+  comment: string;
+  courseId: string;
+  reviewId: String;
 }
 
-export const addReplytoReview=CatchAsyncError(async(req:Request,res:Response,next:NextFunction)=>{
-  const {comment , courseId,reviewId} : IReviewData = req.body;
-  const course = await CourseModel.findById(courseId);
-  if(!course){
-    return next(new ErrorHandler("Course not found",400))
+export const addReplytoReview = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { comment, courseId, reviewId }: IReviewData = req.body;
+    const course = await CourseModel.findById(courseId);
+    if (!course) {
+      return next(new ErrorHandler("Course not found", 400));
+    }
+    const review = course?.reviews?.find((rev: any) =>
+      rev._id.equals(reviewId)
+    );
+    if (!review) {
+      return next(new ErrorHandler("Review not found", 400));
+    }
+    const replyData: any = {
+      user: req?.user,
+      comment,
+    };
+    review?.commentReplies?.push(replyData);
+    await course.save();
+    res.status(200).json({
+      message: "Reply added in review",
+      success: true,
+      course,
+    });
   }
-  const review = course?.reviews?.find((rev:any)=>rev._id.equals(reviewId));
-  if(!review){
-    return next(new ErrorHandler("Review not found",400));
-  }
-  const replyData:any = {
-    user:req?.user,
-    comment
-  }
-  review?.commentReplies?.push(replyData);
-  await course.save();
-  res.status(200).json({
-    message:"Reply added in review",
-    success:true,
-    course 
-  })
-
-})
+);

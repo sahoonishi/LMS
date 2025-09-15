@@ -15,11 +15,11 @@ export interface IUser extends Document {
     url: string;
   };
   role: string;
-  isVerfied: boolean;
-  courses: Array<{ courseId: string }>;
+  isVerified: boolean;
+  courses: Array<{ courseId: mongoose.Types.ObjectId }>;
   comparePassword: (password: string) => Promise<boolean>;
-  SignAccessToken:()=> string;
-  SignRefreshToken:()=> string;
+  SignAccessToken: () => string;
+  SignRefreshToken: () => string;
 }
 
 const userSchema: Schema<IUser> = new mongoose.Schema(
@@ -50,13 +50,13 @@ const userSchema: Schema<IUser> = new mongoose.Schema(
       type: String,
       default: "user",
     },
-    isVerfied: {
+    isVerified: {
       type: Boolean,
       default: false,
     },
     courses: [
       {
-        courseId: String,
+        courseId: { type: Schema.Types.ObjectId, ref: "Course" },
       },
     ],
   },
@@ -71,13 +71,20 @@ userSchema.pre<IUser>("save", async function (next) {
 });
 
 //-----------------Access token----------------
-userSchema.methods.SignAccessToken = function(){
-  return jwt.sign({id:this._id},process.env.ACCESS_TOKEN_SECRET || "" as string , {expiresIn:"5m"});
-}
-userSchema.methods.SignRefreshToken = function(){
-  return jwt.sign({id:this._id},process.env.REFRESH_TOKEN_SECRET || "" as string,{expiresIn:"3d"});
-}
-
+userSchema.methods.SignAccessToken = function () {
+  return jwt.sign(
+    { id: this._id },
+    process.env.ACCESS_TOKEN_SECRET || ("" as string),
+    { expiresIn: "5m" }
+  );
+};
+userSchema.methods.SignRefreshToken = function () {
+  return jwt.sign(
+    { id: this._id },
+    process.env.REFRESH_TOKEN_SECRET || ("" as string),
+    { expiresIn: "3d" }
+  );
+};
 
 // Compare password method
 userSchema.methods.comparePassword = async function (
@@ -88,4 +95,3 @@ userSchema.methods.comparePassword = async function (
 // Create the User model
 const userModel: Model<IUser> = mongoose.model<IUser>("User", userSchema);
 export default userModel;
-

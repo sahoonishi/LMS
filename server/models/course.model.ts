@@ -1,21 +1,25 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Document, Model, Schema, Types } from "mongoose";
 import { IUser } from "./user.model";
 
+// ----------------- Interfaces -----------------
 interface IComment extends Document {
-  user: IUser;
+  user: Types.ObjectId | IUser; // reference to User
   question: string;
-  questionReplies?: IComment[];
+  questionReplies?: Types.DocumentArray<IComment>;
 }
+
 interface IReview extends Document {
-  user: IUser;
+  user: Types.ObjectId | IUser;
   rating: number;
   comment: string;
-  commentReplies?: IComment[];
+  commentReplies?: Types.DocumentArray<IComment>;
 }
+
 interface ILink extends Document {
   title: string;
   url: string;
 }
+
 interface ICourseData extends Document {
   title: string;
   description: string;
@@ -24,102 +28,95 @@ interface ICourseData extends Document {
   videoSection: string;
   videoLength: string;
   videoPlayer: string;
-  links: ILink[];
+  links: Types.DocumentArray<ILink>;
   suggestion: string;
-  questions: IComment[];
+  questions: Types.DocumentArray<IComment>;
 }
-interface ICourse extends Document {
+
+export interface ICourse extends Document {
   name: string;
   description: string;
   price: number;
   estimatePrice?: number;
-  thumbnail: object;
+  thumbnail: {
+    public_id: string;
+    url: string;
+  };
   tags: string;
   level: string;
   demoUrl: string;
   benefits: { title: string }[];
   prerequisites: { title: string }[];
-  reviews: IReview[];
-  courseData: ICourseData[];
+  reviews: Types.DocumentArray<IReview>;
+  courseData: Types.DocumentArray<ICourseData>;
   rating?: number;
   purchased?: number;
 }
 
-const reviewSchema = new Schema<IReview>({
-    user:Object,
-    rating:{type:Number , default:0},
-    comment:String,
-    commentReplies:[Object]
-});
-const linkSchema = new Schema<ILink>({
-    title:String,
-    url:String
-});
-const commentSchema = new Schema<IComment>({
-    user:Object,
-    question:String,
-    questionReplies:[Object]
-});
-const courseDataSchema = new Schema<ICourseData>({
-    videoUrl:String,
-    title:String,
-    videoSection:String,
-    description:String,
-    videoLength:String,
-    videoPlayer:String,
-    links:[linkSchema], //! ---------------IMP------------->>>>>>  Aise v likh sakte h
-    suggestion:String,
-    questions:[commentSchema]
-});
-const courseSchema = new Schema<ICourse>({
-    name:{
-        type:String,
-        required:true,
-    },
-    description:{
-        type:String,
-        required:true,
-    },
-    price:{
-        type:Number,
-        required:true,
-    },
-    estimatePrice:{
-        type:Number,
-    },
-    thumbnail:{
-        public_id:{
-            type:String,
-        },
-        url:{
-            type:String,
-        },
-    },
-    tags:{
-        type:String,
-        required:true,
-    },
-     level:{
-        type:String,
-        required:true,
-    },
-     demoUrl:{
-        type:String,
-        required:true,
-    },
-    benefits:[{title:String}],
-    prerequisites:[{title:String}],
-    reviews:[reviewSchema],
-    courseData:[courseDataSchema],
-    rating:{
-        type:Number,
-        default:0,
-    },
-    purchased:{
-        type:Number,
-        default:0,
-    }
-})
+// ----------------- Schemas -----------------
+const commentSchema = new Schema<IComment>(
+  {
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    question: { type: String, required: true },
+    questionReplies: [{ type: Schema.Types.Mixed }], // could also be [commentSchema] for recursive
+  },
+  { timestamps: true }
+);
 
-const CourseModel: Model<ICourse> = mongoose.model("Course" , courseSchema);
+const reviewSchema = new Schema<IReview>(
+  {
+    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    rating: { type: Number, default: 0 },
+    comment: { type: String, required: true },
+    commentReplies: [commentSchema],
+  },
+  { timestamps: true }
+);
+
+const linkSchema = new Schema<ILink>({
+  title: { type: String, required: true },
+  url: { type: String, required: true },
+});
+
+const courseDataSchema = new Schema<ICourseData>(
+  {
+    title: String,
+    description: String,
+    videoUrl: String,
+    videoThumbnail: String,
+    videoSection: String,
+    videoLength: String,
+    videoPlayer: String,
+    links: [linkSchema],
+    suggestion: String,
+    questions: [commentSchema],
+  },
+  { timestamps: true }
+);
+
+const courseSchema = new Schema<ICourse>(
+  {
+    name: { type: String, required: true },
+    description: { type: String, required: true },
+    price: { type: Number, required: true },
+    estimatePrice: { type: Number },
+    thumbnail: {
+      public_id: { type: String },
+      url: { type: String },
+    },
+    tags: { type: String, required: true },
+    level: { type: String, required: true },
+    demoUrl: { type: String, required: true },
+    benefits: [{ title: String }],
+    prerequisites: [{ title: String }],
+    reviews: [reviewSchema],
+    courseData: [courseDataSchema],
+    rating: { type: Number, default: 0 },
+    purchased: { type: Number, default: 0 },
+  },
+  { timestamps: true }
+);
+
+// ----------------- Model -----------------
+const CourseModel: Model<ICourse> = mongoose.model<ICourse>("Course", courseSchema);
 export default CourseModel;
