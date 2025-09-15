@@ -10,6 +10,7 @@ import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
 import { IUser } from "../models/user.model";
+import NotificationModel from "../models/notification.model";
 
 export const uploadcourse = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -176,6 +177,11 @@ export const addQuestion = CatchAsyncError(
     };
 
     courseContent.questions.push(newQuestion);
+    await NotificationModel.create({
+      user:req.user?._id,
+      title:"New Question added",
+      message:`You have a new notification in ${courseContent?.title}`
+    })
     await course?.save();
     res.status(200).json({
       success: true,
@@ -225,6 +231,11 @@ export const addAnswer = CatchAsyncError(
     await course?.save();
     if (req.user?.id === question?.user?._id) {
       // create notification logix
+      await NotificationModel.create({
+        user:req.user?._id,
+        title:"New Reply has added",
+        message:`You have new reply in ${courseContent?.title}`
+      })
     } else {
       const data = {
         name: (question.user as IUser).name,
