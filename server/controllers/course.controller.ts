@@ -78,6 +78,7 @@ export const getSingleCourse = CatchAsyncError(
     const isCacheExist = await redis.get(courseid);
     if (isCacheExist) {
       const course = JSON.parse(isCacheExist);
+      await redis.expire(courseid, 604800);
       return res.status(200).json({
         success: true,
         course,
@@ -87,7 +88,7 @@ export const getSingleCourse = CatchAsyncError(
       const course = await CourseModel.findById(req.params.id).select(
         "-courseData.videoUrl -courseData.suggesstion -courseData.questions -courseData.links"
       );
-      await redis.set(courseid, JSON.stringify(course));
+      await redis.set(courseid, JSON.stringify(course),"EX",604800);
       res.status(200).json({
         success: true,
         course,

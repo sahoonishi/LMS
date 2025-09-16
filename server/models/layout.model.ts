@@ -21,6 +21,12 @@ export interface ILayout extends Document {
     subtitle: string;
   };
 }
+
+
+//-------------------------_SCHEMA---------------------
+
+
+
 const faqSchema = new Schema<IFaq>({
   question: { type: String },
   answer: { type: String },
@@ -35,7 +41,7 @@ const bannerimageSchema = new Schema<IBannerImage>({
   url: { type: String },
 });
 const layoutSchema = new Schema<ILayout>({
-  type: { type: String },
+  type: { type: String,enum:["Banner","Faq","Categories"] },
   faq: [faqSchema],
   categories: [categorySchema],
   banner: {
