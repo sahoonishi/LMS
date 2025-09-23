@@ -1,27 +1,7 @@
-@config "../tailwind.config.ts";  
-/* added it for tailwind v4 support , to link config file here */
-@import "tailwindcss";
+@config "../tailwind.config.ts";
 
-
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-    --foreground-rgb: 255,255,255;
-  }
-}
+@import "tailwindcss/preflight";
+@tailwind utilities;
 
 body {
   color: rgb(var(--foreground-rgb));

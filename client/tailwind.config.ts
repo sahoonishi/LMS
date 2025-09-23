@@ -1,28 +1,3 @@
-// /** @type {import('tailwindcss').Config} */
-
-// import { Josefin_Sans } from "next/font/google";
-
-// // Removed invalid @config line
-// export default {
-//   content: [
-//     "./index.html",
-//     "./src/**/*.{js,ts,jsx,tsx}",
-//   ],
-//   theme: {
-//     extend: {
-//       fontFamily:{
-//         Poppins:["var(--font-Poppins)"],
-//         Josefin:["var(--font-Josefin)"],
-//       },
-//       colors: {
-//         primary: '#000000',
-//         bg:'#ffffff'
-//       },
-//     },
-//   },
-//   plugins: [],
-// }
-
 import type { Config } from 'tailwindcss';
 
 const config: Config = {
@@ -56,4 +31,5 @@ const config: Config = {
   },
   plugins: [],
 };
+
 export default config;
