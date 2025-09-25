@@ -16,7 +16,9 @@ const NavItems = ({ activeItem, isMobile }: Props) => {
             <Link key={`${index}+${item}`} passHref href={item?.url}>
               <span
                 className={`${
-                  activeItem === index ? "text-black" : "text-black/50"
+                  activeItem === index
+                    ? "text-black font-[500] underline underline-offset-2"
+                    : "text-black/50"
                 }`}
               >
                 {item.name}
@@ -31,7 +33,7 @@ const NavItems = ({ activeItem, isMobile }: Props) => {
               <Link
                 key={`${index}+${item}`}
                 className={`${
-                  activeItem === index ? "text-white" : "text-white/50"
+                  activeItem === index ? "text-black" : "text-black/50"
                 }`}
                 passHref
                 href={item?.url}
