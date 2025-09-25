@@ -18,7 +18,7 @@ const Hero: FC<HeroProps> = () => {
       <div className="w-full md:w-1/2 flex justify-center md:justify-start mb-10 md:mb-0">
         <div className="relative w-[300px] h-[400px] md:w-[400px] md:h-[500px]">
           <Image
-            src="/Hero/2381908.jpg" // replace with your actual image path
+            src="/Hero/2381908.jpg"
             alt="Hero Illustration"
             fill
             style={{ objectFit: "contain", borderRadius: "50%" }}
@@ -56,21 +56,21 @@ const Hero: FC<HeroProps> = () => {
               alt="User"
               width={27}
               height={10}
-              className="rounded-full border-2 border-white"
+              className="rounded-full border-2"
             />
             <Image
               src="/Hero/user/bc9fd4bd-de9b-4555-976c-8360576c6708.jpg"
               alt="User"
               width={27}
               height={10}
-              className="rounded-full border-2 border-white"
+              className="rounded-full border-2"
             />
             <Image
               src="/Hero/user/e4246d0c-bef9-4c10-a903-d45344428107.jpg"
               alt="User"
               width={27}
               height={10}
-              className="rounded-full border-2 border-white"
+              className="rounded-full border-2"
             />
           </div>
           <p className="text-gray-300 text-sm">

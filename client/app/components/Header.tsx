@@ -7,10 +7,12 @@ import { HiOutlineUserCircle } from "react-icons/hi2";
 type props = {
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
+  setRoute: React.Dispatch<SetStateAction<string>>;
   activeItem: number;
+  route:string;
 };
 
-const Header: FC<props> = ({ activeItem, setOpen }) => {
+const Header: FC<props> = ({open, activeItem, setOpen , route , setRoute}) => {
   const [active, setActive] = useState<boolean>(false);
  const [opensidebar, setOpensidebar] = useState(false); // controls animation
 const [isVisible, setIsVisible] = useState(false);     // keeps it in DOM
@@ -98,6 +100,18 @@ const [isVisible, setIsVisible] = useState(false);     // keeps it in DOM
           </div>
         )}
       </div>
+      {
+        route === "Login" && (
+          <>
+          {
+            open && (
+              <CustomModel/>
+            )
+          }
+          </>
+        )
+      }
+
     </div>
   );
 };
