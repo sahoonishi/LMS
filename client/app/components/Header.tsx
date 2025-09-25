@@ -12,7 +12,8 @@ type props = {
 
 const Header: FC<props> = ({ activeItem, setOpen }) => {
   const [active, setActive] = useState<boolean>(false);
-  const [opensidebar, setOpensidebar] = useState<boolean>(false);
+ const [opensidebar, setOpensidebar] = useState(false); // controls animation
+const [isVisible, setIsVisible] = useState(false);     // keeps it in DOM
 
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
@@ -26,19 +27,26 @@ const Header: FC<props> = ({ activeItem, setOpen }) => {
 
   const handleClose = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLDivElement;
-    if(target.id === "screen"){
+    if (target.id === "screen") {
       setOpensidebar(false);
+      setTimeout(()=>
+        setIsVisible(false)
+      ,300)
     }
   };
+  const openSidebar=()=>{
+    setIsVisible(true);
+    setOpensidebar(true);
+  }
 
   return (
-    <div className="w-full relative">
+    <div className="w-full">
       <div
         className={`
         ${
           active
-            ? "fixed w-full top-0 left-0 h-[80px] z-[80]"
-            : "w-full bg-pink-900 border-b dark:border-[#ffffff1c] h-[80px] z-[80] dark:shadow"
+            ? "sticky w-full top-0 left-0 h-[80px] z-[80]"
+            : "w-full bg-[#2b5377] px-4 py-3"
         }
       `}
       >
@@ -46,15 +54,15 @@ const Header: FC<props> = ({ activeItem, setOpen }) => {
           <div className="w-full h-full flex items-center justify-between px-3">
             <div className="w-fit">
               <Link href={"/"} className="text-[25px] font-[500] text-black">
-                LOG
+                LOGO
               </Link>
             </div>
             <div className="flex w-full justify-end  items-center">
               <NavItems activeItem={activeItem} isMobile={false} />
               <HiOutlineMenuAlt3
                 size={25}
-                className="cursor-pointer md:hidden text-black"
-                onClick={() => setOpensidebar(true)}
+                className="cursor-pointer md:hidden transition-all duration-300 text-black "
+                onClick={openSidebar}
               />
               <HiOutlineUserCircle
                 size={25}
@@ -67,15 +75,23 @@ const Header: FC<props> = ({ activeItem, setOpen }) => {
 
         {opensidebar && (
           <div
-            className="fixed w-full h-screen top-0 left-0 z-[99] bg-black"
+            className={`fixed w-full h-screen top-0 left-0 z-[99] bg-black/40 transition-opacity duration-300 ${
+              opensidebar
+                ? "opacity-100 pointer-events-auto"
+                : "opacity-0 pointer-events-none"
+            }`}
             onClick={handleClose}
             id="screen"
           >
-            <div className="w-[70%] fixed z-[999] h-screen bg-white top-0 right-0">
-               <NavItems activeItem={activeItem} isMobile={true} />
-                <HiOutlineUserCircle
+            <div
+              className={`w-[70%] flex flex-col gap-9 py-2 fixed z-[999] h-screen bg-sky-700 top-0 right-0 transform transition-transform duration-300 ${
+                opensidebar ? "translate-x-0" : "translate-x-full"
+              }`}
+            >
+              <NavItems activeItem={activeItem} isMobile={true} />
+              <HiOutlineUserCircle
                 size={25}
-                className="cursor-pointer text-black"
+                className="cursor-pointer ml-3 text-black"
                 onClick={() => setOpen(true)}
               />
             </div>

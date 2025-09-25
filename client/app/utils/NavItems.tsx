@@ -17,8 +17,8 @@ const NavItems = ({ activeItem, isMobile }: Props) => {
               <span
                 className={`${
                   activeItem === index
-                    ? "text-black font-[500] underline underline-offset-2"
-                    : "text-black/50"
+                    ? "text-black shadow-sm rounded-md shadow-black/60 px-4 py-2"
+                    : "text-black"
                 }`}
               >
                 {item.name}
@@ -27,13 +27,13 @@ const NavItems = ({ activeItem, isMobile }: Props) => {
           ))}
       </div>
       {isMobile && (
-        <div className="mt-5 sm:hidden">
+        <div className="mt-5 flex flex-col gap-6 justify-center px-3 h-full sm:hidden">
           {NavItemData &&
             NavItemData?.map((item, index) => (
               <Link
                 key={`${index}+${item}`}
                 className={`${
-                  activeItem === index ? "text-black" : "text-black/50"
+                  activeItem === index ? "text-black shadow-sm rounded-md shadow-black/60 px-2 py-1" : "text-black"
                 }`}
                 passHref
                 href={item?.url}
