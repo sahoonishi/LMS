@@ -25,8 +25,10 @@ const SignUp: React.FC<SignUpProps> = ({ setRoute }) => {
     resolver: zodResolver(SignUpFormSchema),
   });
 
-  const onSubmit: SubmitHandler<SignUpFormValidationType> = (data) =>
-    console.log(data);
+  const onSubmit: SubmitHandler<SignUpFormValidationType> = (data) =>{
+    setRoute("Verification");
+  }
+    
 
   return (
     <div className={styles.container}>

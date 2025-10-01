@@ -5,20 +5,21 @@ import NavItems from "../utils/NavItems";
 import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import CustomModel from "../utils/CustomModel";
-import Login from "../components/Auth/Login"
-import SignUp from "../components/Auth/SignUp"
+import Login from "../components/Auth/Login";
+import SignUp from "../components/Auth/SignUp";
+import Verification from "../components/Auth/Verification";
 type props = {
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
   setRoute: React.Dispatch<SetStateAction<string>>;
   activeItem: number;
-  route:string;
+  route: string;
 };
 
-const Header: FC<props> = ({open, activeItem, setOpen , route , setRoute}) => {
+const Header: FC<props> = ({ open, activeItem, setOpen, route, setRoute }) => {
   const [active, setActive] = useState<boolean>(false);
- const [opensidebar, setOpensidebar] = useState(false); // controls animation
-const [isVisible, setIsVisible] = useState(false);     // keeps it in DOM
+  const [opensidebar, setOpensidebar] = useState(false); // controls animation
+  const [isVisible, setIsVisible] = useState(false); // keeps it in DOM
 
   if (typeof window !== "undefined") {
     window.addEventListener("scroll", () => {
@@ -34,15 +35,13 @@ const [isVisible, setIsVisible] = useState(false);     // keeps it in DOM
     const target = e.target as HTMLDivElement;
     if (target.id === "screen") {
       setOpensidebar(false);
-      setTimeout(()=>
-        setIsVisible(false)
-      ,300)
+      setTimeout(() => setIsVisible(false), 300);
     }
   };
-  const openSidebar=()=>{
+  const openSidebar = () => {
     setIsVisible(true);
     setOpensidebar(true);
-  }
+  };
 
   return (
     <div className="w-full">
@@ -103,41 +102,45 @@ const [isVisible, setIsVisible] = useState(false);     // keeps it in DOM
           </div>
         )}
       </div>
-      {
-        route === "Login" && (
-          <>
-          {
-            open && (
-              <CustomModel
-                open={open}
-                setOpen={setOpen}
-                setRoute={setRoute}
-                activeItem={activeItem}
-                component={Login}
-              />
-            )
-          }
-          </>
-        )
-      }
-       {
-        route === "SignUp" && (
-          <>
-          {
-            open && (
-              <CustomModel
-                open={open}
-                setOpen={setOpen}
-                setRoute={setRoute}
-                activeItem={activeItem}
-                component={SignUp}
-              />
-            )
-          }
-          </>
-        )
-      }
-
+      {route === "Login" && (
+        <>
+          {open && (
+            <CustomModel
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Login}
+            />
+          )}
+        </>
+      )}
+      {route === "SignUp" && (
+        <>
+          {open && (
+            <CustomModel
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={SignUp}
+            />
+          )}
+        </>
+      )}
+      {route === "Verification" && (
+        <>
+          {open && (
+            <CustomModel
+              open={open}
+              setOpen={setOpen}
+              setRoute={setRoute}
+              activeItem={activeItem}
+              component={Verification}
+            />
+          )}
+        </>
+      )}
     </div>
   );
 };
