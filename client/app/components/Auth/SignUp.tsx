@@ -1,5 +1,5 @@
 "use client";
-import { LoginFormSchema, LoginFormValidationType } from "../../zod/validation";
+import { SignUpFormSchema, SignUpFormValidationType } from "../../zod/validation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useState } from "react";
@@ -8,30 +8,47 @@ import {
   AiOutlineEye,
   AiOutlineEyeInvisible,
 } from "react-icons/ai";
-import { styles } from "../../styles/style";
 import { FcGoogle } from "react-icons/fc";
+import { styles } from "../../styles/style";
 
-type LoginProps = {
+type SignUpProps = {
   setRoute: React.Dispatch<React.SetStateAction<string>>;
 };
 
-const Login: React.FC<LoginProps> = ({ setRoute }) => {
+const SignUp: React.FC<SignUpProps> = ({ setRoute }) => {
   const [show, setShow] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginFormValidationType>({
-    resolver: zodResolver(LoginFormSchema),
+  } = useForm<SignUpFormValidationType>({
+    resolver: zodResolver(SignUpFormSchema),
   });
 
-  const onSubmit: SubmitHandler<LoginFormValidationType> = (data) =>
+  const onSubmit: SubmitHandler<SignUpFormValidationType> = (data) =>
     console.log(data);
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Start your learning</h1>
+      <h1 className={styles.title}>Create your account</h1>
       <form onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+        {/* Username Field */}
+        <div className={styles.inputWrapper}>
+          <input
+            type="text"
+            id="username"
+            {...register("username")}
+            placeholder=" "
+            className={`${styles.input} ${errors.username ? styles.inputError : ""}`}
+          />
+          <label htmlFor="username" className={styles.label}>
+            Username
+          </label>
+          {errors.username && (
+            <span className={styles.errorText}>{errors.username.message}</span>
+          )}
+        </div>
+
         {/* Email Field */}
         <div className={styles.inputWrapper}>
           <input
@@ -39,12 +56,10 @@ const Login: React.FC<LoginProps> = ({ setRoute }) => {
             id="email"
             {...register("email")}
             placeholder=" "
-            className={`${styles.input} ${
-              errors.email ? styles.inputError : ""
-            }`}
+            className={`${styles.input} ${errors.email ? styles.inputError : ""}`}
           />
           <label htmlFor="email" className={styles.label}>
-            Enter your email
+            Email
           </label>
           {errors.email && (
             <span className={styles.errorText}>{errors.email.message}</span>
@@ -58,12 +73,10 @@ const Login: React.FC<LoginProps> = ({ setRoute }) => {
             id="password"
             {...register("password")}
             placeholder=" "
-            className={`${styles.input} ${
-              errors.password ? styles.inputError : ""
-            }`}
+            className={`${styles.input} ${errors.password ? styles.inputError : ""}`}
           />
           <label htmlFor="password" className={styles.label}>
-            Enter your password
+            Password
           </label>
           {show ? (
             <AiOutlineEye
@@ -83,28 +96,47 @@ const Login: React.FC<LoginProps> = ({ setRoute }) => {
           )}
         </div>
 
+        {/* Confirm Password Field */}
+        <div className={styles.inputWrapper}>
+          <input
+            type={!show ? "password" : "text"}
+            id="confirmPassword"
+            {...register("confirmPassword")}
+            onPaste={(e)=>e.preventDefault()}                // to prevent user from copy and paste
+            placeholder=" "
+            className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ""}`}
+          />
+          <label htmlFor="confirmPassword" className={styles.label}>
+            Confirm Password
+          </label>
+          {errors.confirmPassword && (
+            <span className={styles.errorText}>{errors.confirmPassword.message}</span>
+          )}
+        </div>
+
         {/* Submit Button */}
         <button type="submit" className={styles.button}>
-          Login
+          Sign Up
         </button>
-        <h5 className="text-center text-white text-[14px] ">Or join with</h5>
+
+        <h5 className="text-center text-white text-[14px] my-2">Or join with</h5>
         <div className="flex items-center justify-center my-2">
           <FcGoogle size={30} className="cursor-pointer mr-2" />
           <AiFillGithub size={30} className="cursor-pointer mr-2" />
         </div>
-        <h5 className="text-center  text-[14px]">
-          Don't have any acccount ?
+
+        <h5 className="text-center text-[14px]">
+          Already have an account?
           <span
-            onClick={() => setRoute("SignUp")}
-            className=" text-[#2190ff] cursor-pointer  "
+            onClick={() => setRoute("Login")}
+            className="text-[#2190ff] cursor-pointer ml-1"
           >
-            {" "}
-            SignUp
+            Login
           </span>
-        </h5> 
+        </h5>
       </form>
     </div>
   );
 };
 
-export default Login;
+export default SignUp;

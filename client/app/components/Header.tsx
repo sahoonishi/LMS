@@ -6,6 +6,7 @@ import { HiOutlineMenuAlt3 } from "react-icons/hi";
 import { HiOutlineUserCircle } from "react-icons/hi2";
 import CustomModel from "../utils/CustomModel";
 import Login from "../components/Auth/Login"
+import SignUp from "../components/Auth/SignUp"
 type props = {
   open: boolean;
   setOpen: React.Dispatch<SetStateAction<boolean>>;
@@ -113,6 +114,23 @@ const [isVisible, setIsVisible] = useState(false);     // keeps it in DOM
                 setRoute={setRoute}
                 activeItem={activeItem}
                 component={Login}
+              />
+            )
+          }
+          </>
+        )
+      }
+       {
+        route === "SignUp" && (
+          <>
+          {
+            open && (
+              <CustomModel
+                open={open}
+                setOpen={setOpen}
+                setRoute={setRoute}
+                activeItem={activeItem}
+                component={SignUp}
               />
             )
           }

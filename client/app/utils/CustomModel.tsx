@@ -29,7 +29,7 @@ function CustomModel<T = {}>({
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <Box className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[450px] bg-white rounded-[8px]">
+      <Box className="absolute top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[450px] rounded-[8px]">
         <Component setOpen={setOpen} setRoute={setRoute} {...(rest as T)} />
       </Box>
     </Modal>
