@@ -11,7 +11,7 @@ const Page: FC<props> = (props) => {
   const [activeItem, setActiveitem] = useState<number>(0);
   return (
     <div className="relative text-amber-200">
-      <Heading title="hh" desc="rr" keyword="ll" />
+      <Heading title="LMS" desc="A multi functional learning management system" keyword="lms LMS" />
       <Header open={open} setOpen={setOpen} activeItem={activeItem} setRoute={setRoute} route={route} />
       <Hero/>
       {/* <Course/> */}

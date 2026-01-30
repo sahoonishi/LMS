@@ -50,7 +50,7 @@ const Header: FC<props> = ({ open, activeItem, setOpen, route, setRoute }) => {
         ${
           active
             ? "sticky w-full top-0 left-0 h-[80px] z-[80]"
-            : "w-full bg-[#2b5377] px-4 py-3"
+            : "w-full bg-[#849aad] px-4 py-3"
         }
       `}
       >
@@ -79,7 +79,7 @@ const Header: FC<props> = ({ open, activeItem, setOpen, route, setRoute }) => {
 
         {opensidebar && (
           <div
-            className={`fixed w-full h-screen top-0 left-0 z-[99] bg-black/40 transition-opacity duration-300 ${
+            className={`fixed w-full h-screen top-0 left-0 z-[99] bg-black/40 transition-all duration-300 ${
               opensidebar
                 ? "opacity-100 pointer-events-auto"
                 : "opacity-0 pointer-events-none"
@@ -88,7 +88,7 @@ const Header: FC<props> = ({ open, activeItem, setOpen, route, setRoute }) => {
             id="screen"
           >
             <div
-              className={`w-[70%] flex flex-col gap-9 py-2 fixed z-[999] h-screen bg-sky-700 top-0 right-0 transform transition-transform duration-300 ${
+              className={`w-[70%] flex flex-col gap-9 py-2 fixed z-[999] h-screen bg-white/95 top-0 right-0 transform transition-transform duration-300 ${
                 opensidebar ? "translate-x-0" : "translate-x-full"
               }`}
             >

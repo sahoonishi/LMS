@@ -17,7 +17,7 @@ const NavItems = ({ activeItem, isMobile }: Props) => {
               <span
                 className={`${
                   activeItem === index
-                    ? "text-black shadow-sm rounded-md shadow-black/60 px-4 py-2"
+                    ? "text-black scale-105 px-4 py-2"
                     : "text-black"
                 }`}
               >
@@ -33,8 +33,8 @@ const NavItems = ({ activeItem, isMobile }: Props) => {
               <Link
                 key={`${index}+${item}`}
                 className={`${
-                  activeItem === index ? "text-black shadow-sm rounded-md shadow-black/60 px-2 py-1" : "text-black"
-                }`}
+                  activeItem === index ? "text-black shadow-xs rounded-md shadow-black/60" : "text-black"
+                } px-2 py-1`}
                 passHref
                 href={item?.url}
               >

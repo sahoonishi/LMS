@@ -16,7 +16,7 @@ const Hero: FC<HeroProps> = () => {
     <section className="w-full h-[calc(100vh-80px)] flex flex-col md:flex-row items-center justify-between px-6 md:px-20 py-12 bg-gray-900 text-white">
       {/* Left side - Illustration */}
       <div className="w-full md:w-1/2 flex justify-center md:justify-start mb-10 md:mb-0">
-        <div className="relative w-[300px] h-[400px] md:w-[400px] md:h-[500px]">
+        <div className="relative w-[400px] h-[250px] md:w-[400px] md:h-[500px]">
           <Image
             src="/Hero/2381908.jpg"
             alt="Hero Illustration"
@@ -27,8 +27,8 @@ const Hero: FC<HeroProps> = () => {
       </div>
 
       {/* Right side - Content */}
-      <div className="w-full md:w-1/2 flex flex-col gap-6">
-        <h1 className="text-4xl md:text-5xl font-bold leading-snug">
+      <div className="w-full md:w-1/2 flex flex-col gap-4 md:gap-6">
+        <h1 className="text-2xl md:text-5xl font-bold leading-snug">
           Improve Your Online <br /> Learning Experience <br /> Better Instantly
         </h1>
         <p className="text-sm md:text-base text-gray-300">
@@ -37,7 +37,7 @@ const Hero: FC<HeroProps> = () => {
         </p>
 
         {/* Search Bar */}
-        <div className="flex rounded-md w-full max-w-md mt-4">
+        <div className="flex rounded-md w-full max-w-md mt-1 md:mt-4">
           <input
             type="text"
             placeholder="Search Courses..."
@@ -49,7 +49,7 @@ const Hero: FC<HeroProps> = () => {
         </div>
 
         {/* Trusted Users */}
-        <div className="flex items-center gap-2 mt-4">
+        <div className="flex items-center gap-2 mb-2 md:mt-4 md:mb-0">
           <div className="flex w-fit -space-x-2">
             <Image
               src="/Hero/user/62424a3e-9cdc-422f-a2c8-5cce272934e2.jpg"
