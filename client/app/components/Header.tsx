@@ -71,7 +71,7 @@ const Header: FC<props> = ({ open, activeItem, setOpen, route, setRoute }) => {
               <HiOutlineUserCircle
                 size={25}
                 className="cursor-pointer hidden md:block text-black"
-                onClick={() => setOpen(true)}
+                onClick={() => {setOpen(true),setRoute("Login")}}
               />
             </div>
           </div>

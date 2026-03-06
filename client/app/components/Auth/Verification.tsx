@@ -8,8 +8,18 @@ type VerifyNumber = { "0": string; "1": string; "2": string; "3": string };
 
 const Verification = ({ setRoute }: Props) => {
   const [invalidError, setInvalidError] = useState<boolean>(false);
-  const inputRefs = [useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null), useRef<HTMLInputElement>(null)];
-  const [verifyNumber, setVerifyNumber] = useState<VerifyNumber>({ 0: "", 1: "", 2: "", 3: "" });
+  const inputRefs = [
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+    useRef<HTMLInputElement>(null),
+  ];
+  const [verifyNumber, setVerifyNumber] = useState<VerifyNumber>({
+    0: "",
+    1: "",
+    2: "",
+    3: "",
+  });
 
   const handleInputChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
@@ -22,8 +32,15 @@ const Verification = ({ setRoute }: Props) => {
     }
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>, index: number) => {
-    if (e.key === "Backspace" && !verifyNumber[index as keyof VerifyNumber] && index > 0) {
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement>,
+    index: number,
+  ) => {
+    if (
+      e.key === "Backspace" &&
+      !verifyNumber[index as unknown as keyof VerifyNumber] &&
+      index > 0
+    ) {
       inputRefs[index - 1].current?.focus();
     }
   };
@@ -31,7 +48,7 @@ const Verification = ({ setRoute }: Props) => {
   const handleFocus = (index: number) => {
     const values = Object.values(verifyNumber);
     const firstEmptyIndex = values.findIndex((val) => val === "");
-    
+
     // If user clicks a later box but the previous ones are empty, redirect them
     if (firstEmptyIndex !== -1 && index > firstEmptyIndex) {
       inputRefs[firstEmptyIndex].current?.focus();
@@ -44,11 +61,16 @@ const Verification = ({ setRoute }: Props) => {
     const newVerifyNumber = { ...verifyNumber };
     data.forEach((char, index) => {
       if (/^\d$/.test(char)) {
-        newVerifyNumber[index as keyof VerifyNumber] = char;
+        newVerifyNumber[index as unknown as keyof VerifyNumber] = char;
       }
     });
     setVerifyNumber(newVerifyNumber);
     inputRefs[data.length - 1]?.current?.focus();
+  };
+
+  const verficationHandler = () => {
+    setInvalidError(true);
+    setTimeout(() => setInvalidError(false), 500);
   };
 
   return (
@@ -60,27 +82,39 @@ const Verification = ({ setRoute }: Props) => {
         </div>
       </div>
 
-      <div className="w-full mx-auto py-8 flex justify-between gap-2" onPaste={handlePaste}>
+      <div
+        className="w-full mx-auto py-8 flex justify-between gap-2"
+        onPaste={handlePaste}
+      >
         {[0, 1, 2, 3].map((index) => (
           <input
             key={index}
             ref={inputRefs[index]}
             type="text"
             maxLength={1}
-            value={verifyNumber[index as keyof VerifyNumber]}
+            value={verifyNumber[index as unknown as keyof VerifyNumber]}
             onFocus={() => handleFocus(index)}
             onKeyDown={(e) => handleKeyDown(e, index)}
             onChange={(e) => handleInputChange(index, e.target.value)}
             className={`w-16 h-16 border-2 text-center text-2xl font-bold rounded-xl outline-none transition-all
-              ${invalidError ? "border-red-500" : "border-gray-300 focus:border-sky-500 focus:shadow-[0_0_8px_rgba(14,165,233,0.5)]"}
+              ${invalidError ? "shake border-red-500" : "border-gray-300 focus:border-sky-500 focus:shadow-[0_0_8px_rgba(14,165,233,0.5)]"}
               dark:text-white text-black bg-transparent`}
           />
         ))}
       </div>
 
-      <button className={styles.button} onClick={() => console.log(Object.values(verifyNumber).join(""))}>
+      <button className={styles.button} onClick={verficationHandler}>
         Verify OTP
       </button>
+      <h5 className=" flex justify-center pt-7 ">
+        Go back to sign in?{" "}
+        <span
+          className="text-sky-500 ml-2 cursor-pointer"
+          onClick={() => setRoute("Login")}
+        >
+          Sign in
+        </span>
+      </h5>
     </div>
   );
 };
