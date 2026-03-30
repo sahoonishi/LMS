@@ -2,7 +2,7 @@
 import { SignUpFormSchema, SignUpFormValidationType } from "../../zod/validation";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AiFillGithub,
   AiOutlineEye,
@@ -10,6 +10,8 @@ import {
 } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { styles } from "../../styles/style";
+import { useRegisterUserMutation } from "@/app/redux/features/auth/authApi";
+import toast from "react-hot-toast";
 
 type SignUpProps = {
   setRoute: React.Dispatch<React.SetStateAction<string>>;
@@ -24,9 +26,32 @@ const SignUp: React.FC<SignUpProps> = ({ setRoute }) => {
   } = useForm<SignUpFormValidationType>({
     resolver: zodResolver(SignUpFormSchema),
   });
+  const [registerUser,{isError,isLoading,isSuccess,data,error}] = useRegisterUserMutation();
 
-  const onSubmit: SubmitHandler<SignUpFormValidationType> = (data) =>{
-    setRoute("Verification");
+  useEffect(()=>{
+    if(isSuccess){
+      const message = data?.message || "Registered Successfully"
+      toast.success(message);
+      setRoute("Login");
+    }
+    if(error){
+      if("data" in error as any){
+        const errorData = error as any;
+        const message = errorData?.data?.message;
+        toast.error(message);
+      }
+    }
+  },[isSuccess,error]);
+
+  const onSubmit: SubmitHandler<SignUpFormValidationType> = async(formData) =>{
+  const data = {
+    name: formData.username,
+    email: formData.email,
+    password: formData.password
+  };
+
+    await registerUser(data);
+    // setRoute("Verification");
   }
     
 
