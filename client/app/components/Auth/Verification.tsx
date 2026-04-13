@@ -1,13 +1,44 @@
 "use client";
+import { useActivationMutation } from "@/app/redux/features/auth/authApi";
 import { styles } from "@/app/styles/style";
-import React, { SetStateAction, useRef, useState } from "react";
+import React, { SetStateAction, useEffect, useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
+import { useSelector } from "react-redux";
 
 type Props = { setRoute: React.Dispatch<SetStateAction<string>> };
 type VerifyNumber = { "0": string; "1": string; "2": string; "3": string };
 
 const Verification = ({ setRoute }: Props) => {
   const [invalidError, setInvalidError] = useState<boolean>(false);
+  const {token} = useSelector((state:any)=>state.auth);
+  const [activation, {isError, isSuccess, error}] = useActivationMutation();
+
+  const triggerShake = () => {
+    setInvalidError(false);
+    setTimeout(() => setInvalidError(true), 10);
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      toast.success("Account activated successfully!");
+      setRoute("Login");
+    }
+    if (isError && error) {
+      if ("data" in (error as any)) {
+        const errorData = error as any;
+        const message = errorData?.data?.message || "Activation failed";
+        toast.error(message);
+        triggerShake();
+      }else{
+        toast.error("Activation failed");
+        console.log(error);
+        triggerShake();
+      }
+    }
+  }, [isError, isSuccess, error, setRoute]);
+
+
   const inputRefs = [
     useRef<HTMLInputElement>(null),
     useRef<HTMLInputElement>(null),
@@ -23,6 +54,9 @@ const Verification = ({ setRoute }: Props) => {
 
   const handleInputChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return;
+    if (invalidError) {
+      setInvalidError(false);
+    }
     const newVerifyNumber = { ...verifyNumber, [index]: value };
     setVerifyNumber(newVerifyNumber);
 
@@ -68,9 +102,13 @@ const Verification = ({ setRoute }: Props) => {
     inputRefs[data.length - 1]?.current?.focus();
   };
 
-  const verficationHandler = () => {
-    setInvalidError(true);
-    setTimeout(() => setInvalidError(false), 500);
+  const verficationHandler = async() => {
+    const activationCode = Object.values(verifyNumber).join("");
+    if(activationCode.length < 4){
+      triggerShake();
+      return;
+    }
+    await activation({activationToken:token, activationCode});
   };
 
   return (

@@ -26,34 +26,34 @@ const SignUp: React.FC<SignUpProps> = ({ setRoute }) => {
   } = useForm<SignUpFormValidationType>({
     resolver: zodResolver(SignUpFormSchema),
   });
-  const [registerUser,{isError,isLoading,isSuccess,data,error}] = useRegisterUserMutation();
+  const [registerUser, { isError, isLoading, isSuccess, data, error }] = useRegisterUserMutation();
 
-  useEffect(()=>{
-    if(isSuccess){
+  useEffect(() => {
+    if (isSuccess) {
       const message = data?.message || "Registered Successfully"
       toast.success(message);
-      setRoute("Login");
+      setRoute("Verification");
     }
-    if(error){
-      if("data" in error as any){
+    if (error) {
+      if ("data" in error as any) {
         const errorData = error as any;
         const message = errorData?.data?.message;
         toast.error(message);
       }
     }
-  },[isSuccess,error]);
+  }, [isSuccess, error]);
 
-  const onSubmit: SubmitHandler<SignUpFormValidationType> = async(formData) =>{
-  const data = {
-    name: formData.username,
-    email: formData.email,
-    password: formData.password
-  };
+  const onSubmit: SubmitHandler<SignUpFormValidationType> = async (formData) => {
+    const data = {
+      name: formData.username,
+      email: formData.email,
+      password: formData.password
+    };
 
     await registerUser(data);
     // setRoute("Verification");
   }
-    
+
 
   return (
     <div className={styles.container}>
@@ -129,7 +129,7 @@ const SignUp: React.FC<SignUpProps> = ({ setRoute }) => {
             type={!show ? "password" : "text"}
             id="confirmPassword"
             {...register("confirmPassword")}
-            onPaste={(e)=>e.preventDefault()}                // to prevent user from copy and paste
+            onPaste={(e) => e.preventDefault()}                // to prevent user from copy and paste
             placeholder=" "
             className={`${styles.input} ${errors.confirmPassword ? styles.inputError : ""}`}
           />
