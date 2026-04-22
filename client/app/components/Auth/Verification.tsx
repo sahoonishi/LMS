@@ -12,7 +12,7 @@ type VerifyNumber = { "0": string; "1": string; "2": string; "3": string };
 const Verification = ({ setRoute }: Props) => {
   const [invalidError, setInvalidError] = useState<boolean>(false);
   const {token} = useSelector((state:any)=>state.auth);
-  const [activation, {isError, isSuccess, error}] = useActivationMutation();
+  const [activation, {isError, isSuccess, error,isLoading}] = useActivationMutation();
 
   const triggerShake = () => {
     setInvalidError(false);
@@ -76,6 +76,10 @@ const Verification = ({ setRoute }: Props) => {
       index > 0
     ) {
       inputRefs[index - 1].current?.focus();
+    }
+
+    if(e.key === "Enter"){
+      verficationHandler();
     }
   };
 
@@ -141,8 +145,8 @@ const Verification = ({ setRoute }: Props) => {
         ))}
       </div>
 
-      <button className={styles.button} onClick={verficationHandler}>
-        Verify OTP
+      <button className={styles.button} onKeyDown={()=>verficationHandler()} onClick={verficationHandler}>
+        Verify OTP {isLoading && <span className="animate-spin ml-1 inline-block w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full"></span>}
       </button>
       <h5 className=" flex justify-center pt-7 ">
         Go back to sign in?{" "}

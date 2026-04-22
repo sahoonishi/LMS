@@ -25,8 +25,9 @@ const Login: React.FC<LoginProps> = ({ setRoute }) => {
     resolver: zodResolver(LoginFormSchema),
   });
 
-  const onSubmit: SubmitHandler<LoginFormValidationType> = (data) =>
-    console.log(data);
+  const onSubmit: SubmitHandler<LoginFormValidationType> = (data) =>{
+
+  }
 
   return (
     <div className={styles.container}>
